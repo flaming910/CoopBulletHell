@@ -6,14 +6,19 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour
 {
     [SerializeField] private float speed;
+
     [SerializeField] private GameObject bullet;
     [SerializeField] private float reloadTime;
+    [SerializeField] private float dashCooldown;
     private float timeSinceShot;
+    private float timeSinceDash;
     private Rigidbody rigidBody;
     // Start is called before the first frame update
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
+        timeSinceShot = reloadTime;
+        timeSinceDash = dashCooldown;
     }
 
     // Update is called once per frame
@@ -21,8 +26,15 @@ public class PlayerControl : MonoBehaviour
     {
         float zVelocity = Input.GetAxis("Vertical");
         float xVelocity = Input.GetAxis("Horizontal");
+        var rbVelocity = rigidBody.velocity;
+        var targetVelocity = new Vector3(xVelocity, 0, zVelocity);
+        targetVelocity = Vector3.ClampMagnitude(targetVelocity, 1);
+        targetVelocity *= speed;
 
-        rigidBody.velocity = new Vector3(xVelocity * speed, 0, zVelocity * speed);
+        var velocityChange = (targetVelocity - rbVelocity);
+        print(velocityChange);
+
+        rigidBody.AddForce(velocityChange, ForceMode.Force);
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Plane plane = new Plane(Vector3.up, Vector3.zero);
@@ -48,6 +60,16 @@ public class PlayerControl : MonoBehaviour
         {
             ShootAlt();
         }
+
+        //Dash
+        if (timeSinceDash <= dashCooldown)
+        {
+            timeSinceDash += Time.deltaTime;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            Dash();
+        }
     }
 
     private void Shoot()
@@ -72,5 +94,10 @@ public class PlayerControl : MonoBehaviour
         bulletObj.GetComponent<Rigidbody>().velocity = bulletObj.transform.forward * 16;
         bulletObj.GetComponent<Projectile>().lifetime = 0.6f;
         timeSinceShot = -reloadTime;
+    }
+
+    private void Dash()
+    {
+        rigidBody.AddForce(transform.forward * 25, ForceMode.Impulse);
     }
 }
