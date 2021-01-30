@@ -32,7 +32,6 @@ public class PlayerControl : MonoBehaviour
         targetVelocity *= speed;
 
         var velocityChange = (targetVelocity - rbVelocity);
-        print(velocityChange);
 
         rigidBody.AddForce(velocityChange, ForceMode.Force);
 
@@ -77,6 +76,7 @@ public class PlayerControl : MonoBehaviour
         var bulletObj = Instantiate(bullet, transform.position, transform.rotation);
         bulletObj.GetComponent<Rigidbody>().velocity = transform.forward * 20;
         bulletObj.GetComponent<Projectile>().lifetime = 1.5f;
+        bulletObj.GetComponent<Projectile>().damage = 1f;
         timeSinceShot = 0;
     }
 
@@ -87,12 +87,15 @@ public class PlayerControl : MonoBehaviour
         var bulletObj = Instantiate(bullet, transform.position, Quaternion.Euler(rotation));
         bulletObj.GetComponent<Rigidbody>().velocity = bulletObj.transform.forward * 16;
         bulletObj.GetComponent<Projectile>().lifetime = 0.6f;
+        bulletObj.GetComponent<Projectile>().damage = 1f;
         bulletObj = Instantiate(bullet, transform.position, Quaternion.Euler(rotation + new Vector3(0, 12, 0)) );
         bulletObj.GetComponent<Rigidbody>().velocity = bulletObj.transform.forward * 16;
         bulletObj.GetComponent<Projectile>().lifetime = 0.6f;
+        bulletObj.GetComponent<Projectile>().damage = 1f;
         bulletObj = Instantiate(bullet, transform.position, Quaternion.Euler(rotation - new Vector3(0, 12, 0)));
         bulletObj.GetComponent<Rigidbody>().velocity = bulletObj.transform.forward * 16;
         bulletObj.GetComponent<Projectile>().lifetime = 0.6f;
+        bulletObj.GetComponent<Projectile>().damage = 1f;
         timeSinceShot = -reloadTime;
     }
 

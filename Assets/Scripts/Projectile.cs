@@ -1,10 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     public float lifetime;
+    public float damage;
 
     // Update is called once per frame
     void Update()
@@ -15,6 +18,15 @@ public class Projectile : MonoBehaviour
         }
         else
         {
+            Destroy(this.gameObject);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            other.GetComponent<EnemyController>().TakeDamage(damage);
             Destroy(this.gameObject);
         }
     }
