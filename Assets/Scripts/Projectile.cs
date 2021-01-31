@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class Projectile : MonoBehaviour
+public class Projectile : MonoBehaviourPun
 {
     public float lifetime;
     public float damage;
@@ -14,7 +15,7 @@ public class Projectile : MonoBehaviour
         }
         else
         {
-            Destroy(this.gameObject);
+            DestroyProjectile();
         }
     }
 
@@ -23,7 +24,16 @@ public class Projectile : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             other.GetComponent<EnemyController>().TakeDamage(damage);
-            Destroy(this.gameObject);
+            DestroyProjectile();
         }
     }
+
+    private void DestroyProjectile()
+    {
+        if (photonView.IsMine)
+        {
+            PhotonNetwork.Destroy(this.gameObject);
+        }
+    }
+
 }

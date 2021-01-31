@@ -1,6 +1,7 @@
+using Photon.Pun;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviourPun
 {
     [SerializeField] private float health;
 
@@ -18,7 +19,8 @@ public class EnemyController : MonoBehaviour
 
     private void Die()
     {
-        Destroy(this.gameObject);
+        //TODO: Fix Non-Master clients so they can kill things
+        PhotonNetwork.Destroy(this.gameObject);
         //TODO: Do some cool death effect
     }
 
