@@ -1,6 +1,8 @@
+using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerControl : MonoBehaviourPun
 {
     [SerializeField] private float speed;
 
@@ -16,11 +18,29 @@ public class PlayerControl : MonoBehaviour
         rigidBody = GetComponent<Rigidbody>();
         timeSinceShot = reloadTime;
         timeSinceDash = dashCooldown;
+
+        CameraWork cameraWork = GetComponent<CameraWork>();
+        if (!cameraWork)
+        {
+            if (photonView.IsMine)
+            {
+                cameraWork.OnStartFollowing();
+            }
+        }
+        else
+        {
+            Debug.LogError("<Color=Red>No CameraWork found</Color>");
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (photonView.IsMine == false && PhotonNetwork.IsConnected == true)
+        {
+            return;
+        }
         float zVelocity = Input.GetAxis("Vertical");
         float xVelocity = Input.GetAxis("Horizontal");
         var rbVelocity = rigidBody.velocity;
